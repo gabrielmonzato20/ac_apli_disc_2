@@ -158,7 +158,14 @@ Note que essa função recebe o nome-comum do time, nao sua id.
 Ela retorna uma lista das datas em que o time jogou
 '''
 def datas_de_jogos_de_um_time(dados,nome_time):
-    pass
+    id_time = id_do_time(dados,nome_time)
+    lista_de_data_time=[]
+    dados_De_jogo = dados['fases']['2700']['jogos']['id']
+    for id_jogo in dados_De_jogo:
+        dado_jogo=dados_De_jogo[id_jogo]
+        if id_time == dado_jogo['time1'] or id_time == dado_jogo['time2']:
+            lista_de_data_time.append(dado_jogo['data'])
+    return lista_de_data_time
 
 
 '''
@@ -168,7 +175,7 @@ Ela devolve um dicionário, com quantos gols cada time fez
 '''
 
 def dicionario_de_gols(dados):
-    pass
+    
 
 '''
 A proxima funcao recebe apenas o dicionario dos dados do brasileirao
