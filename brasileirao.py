@@ -175,15 +175,35 @@ Ela devolve um dicionário, com quantos gols cada time fez
 '''
 
 def dicionario_de_gols(dados):
-    
+  times = dados['equipes']
+  jogos = dados['fases']['2700']['jogos']['id']
+  dic_goals = {}
+  for time in times:
+      tot_goals = 0
+      for jogo in jogos:
+          jogo_equipe = jogos[jogo]
+          if time == jogo_equipe['time1']:
+              tot_goals+=int(jogo_equipe['placar1'])
+          elif time == jogo_equipe['time2']:
+              tot_goals+=int(jogo_equipe['placar2'])
+      dic_goals[time]= tot_goals
+  return dic_goals
+  
+  '''
+  A proxima funcao recebe apenas o dicionario dos dados do brasileirao
+  Ela devolve a id do time que fez mais gols no campeonato
+  '''
 
-'''
-A proxima funcao recebe apenas o dicionario dos dados do brasileirao
-
-Ela devolve a id do time que fez mais gols no campeonato
-'''
 def time_que_fez_mais_gols(dados):
-    pass
+    times =  dicionario_de_gols(dados)
+    maior =0
+    maiors=0
+    for time in times:
+        if int(times[time]) > maior:
+            maior = times[time]
+            maiors = time
+    return maiors
+ 
 
 
 '''
@@ -196,7 +216,30 @@ Ou seja, as chaves sao ids de estádios e os valores associados,
 o número de vezes que um jogo ocorreu no estádio
 '''
 def dicionario_id_estadio_e_nro_jogos(dados):
-    pass
+    estagio = {}
+    lista_estagio = []
+    jogos = dados['fases']['2700']['jogos']['id']
+    for jogo in jogos:
+        jogoo = jogos[jogo]
+        id_estagio=str(jogoo['estadio_id'])
+        if id_estagio in lista_estagio:
+            pass
+        else:
+            lista_estagio.append(id_estagio)
+        # if estagio[id_estagio] == True:
+        #     estagio[id_estagio]+=1
+        # else:
+        #     estagio[id_estagio]=1
+    for estadio in lista_estagio:
+        tot_jogos = 0
+        for jogo in jogos:
+            jogoo = jogos[jogo]
+            if estadio == jogoo['estadio_id']:
+                tot_jogos+=1
+        estagio[estadio] = tot_jogos
+     
+    return estagio
+  
 
 '''
 A proxima funcao recebe apenas o dicionario dos dados do brasileirao
@@ -210,14 +253,17 @@ fornecidos.
 #devolve quantos times sao classificados para a libertadores (consultando dicionario
 #de faixas)
 def qtos_libertadores(dados):
-    pass
+     jogos = dados['fases']['2700']['faixas-classificacao']['classifica1']['faixa']
+     return(int(jogos[2]))
+    
 
 '''
 A proxima funcao recebe um tamanho, e retorna uma lista
 com len(lista)=tamanho, com as ids dos times melhor classificados
 '''
 def ids_dos_melhor_classificados(dados,numero):
-    pass
+    jogos = dados['fases']['2700']['classificacao']['grupo']['Único'][:numero]
+    return jogos
 
 '''
 A proxima funcao usa as duas anteriores para retornar uma 
@@ -231,7 +277,8 @@ A funcao so recebe os dados do brasileirao
 
 '''
 def classificados_libertadores(dados):
-    pass
+    numero = qtos_libertadores(dados)
+    return ids_dos_melhor_classificados(dados,numero)
 
 '''
 Da mesma forma que podemos obter a informacao dos times classificados
@@ -244,8 +291,10 @@ Consulte a zona de rebaixamento do dicionário de dados, nao deixe
 ela chumbada da função
 '''
 def rebaixados(dados):
-    pass
-
+    clasificacao = dados['fases']['2700']['faixas-classificacao']['classifica3']['faixa'].split("-")
+    print(clasificacao)
+    jogos = dados['fases']['2700']['classificacao']['grupo']['Único'][int(clasificacao[0])-1:int(clasificacao[1])]
+    return jogos
 '''
 A proxima função recebe (alem do dicionario de dados do brasileirao) uma id de time
 
@@ -254,7 +303,14 @@ Ela retorna a classificacao desse time no campeonato.
 Se a id nao for valida, ela retorna a string 'nao encontrado'
 '''
 def classificacao_do_time_por_id(dados,time_id):
-    pass
+    jogos = dados['fases']['2700']['classificacao']['grupo']['Único']
+    if time_id in jogos:
+        jogos_classificacao = dados['fases']['2700']['classificacao']['grupo']['Único'].index(time_id)
+        jogos_classificacao+=1
+        return  jogos_classificacao
+    else:
+        return 'nao encontrado'
+
 
 
 import unittest
